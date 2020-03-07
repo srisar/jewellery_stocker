@@ -1,0 +1,21 @@
+{
+  "name": "gravitide/jman",
+  "authors": [
+    {
+      "name": "Srisaravana M",
+      "email": "saravanamuthaly@gmail.com"
+    }
+  ],
+  "require": {
+    "ext-pdo": "*",
+    "kosinix/grafika": "dev-master",
+    "ext-json": "*",
+    "nesbot/carbon": "^2.31"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jman\\": "app/",
+      "Grafika\\": "vendor/autoload"
+    }
+  }
+}

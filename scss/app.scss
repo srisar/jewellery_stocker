@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:400,700&display=swap');
+
+@font-face {
+  font-family: 'Recursive';
+  src: url('recursive.woff2') format('woff2-variations');
+  font-weight: 300 1000;
+}
+
+body {
+  font-family: "Recursive", sans-serif;
+  font-size: 0.8em;
+  background-color: #e6e6e6;
+}
+
+.needs-validation {
+}
+
+#img_profile_pic {
+  max-width: 200px;
+  max-height: 200px;
+  border: solid 1px #DFDFDF;
+  border-radius: 0.25rem;
+  padding: 5px;
+}
+
+.card-header {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.card-body {
+  padding: 1em;
+}
+
+.toast-body {
+  opacity: .8;
+}
+
+.data_table {
+
+}
+
+.date_field {
+
+}
+
+h1 {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+h5 {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#toast_container {
+  z-index: 9999;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+}
