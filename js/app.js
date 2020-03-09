@@ -7,6 +7,9 @@ $(function () {
     $(".date_field").daterangepicker({
         "singleDatePicker": true,
         "showDropdowns": true,
+        "locale": {
+            "format": "YYYY-MM-DD"
+        }
     });
 
     validateForms();

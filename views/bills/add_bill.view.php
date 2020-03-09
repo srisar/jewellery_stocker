@@ -15,13 +15,13 @@ use Jman\Models\Category;
 
         <div class="col-12 col-md-8">
 
-            <div class="card" id="container_add_item">
+            <div class="card" id="container_add_bill">
                 <div class="card-header">Add new bill</div>
                 <div class="card-body">
 
                     <div class="form-group">
                         <label for="field_item_name">Bill date</label>
-                        <input type="text" class="form-control date_field" id="field_item_name" value="">
+                        <input type="text" class="form-control date_field" id="field_bill_date" value="">
                     </div>
 
                     <div class="row">

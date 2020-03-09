@@ -38,4 +38,6 @@ Router::add('/items/edit-action', ItemsController::class, 'actionEditItem');
 Router::add('/items/search', ItemsController::class, 'actionSearchItems');
 Router::add('/items/get', ItemsController::class, 'actionGetItems');
 
+Router::add('/bills', BillsController::class, 'viewBills');
 Router::add('/bills/add', BillsController::class, 'viewAddBill');
+Router::add('/bills/add-action', BillsController::class, 'actionAddBill');

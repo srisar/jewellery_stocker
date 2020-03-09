@@ -91,6 +91,22 @@ class Item
         ]);
     }
 
+
+    public function reduceQuantity($quantity)
+    {
+        $db = Database::get_instance();
+        $statement = $db->prepare(
+            "UPDATE items SET                    
+                    quantity = :quantity
+                WHERE id = :id;");
+
+
+        return $statement->execute([
+            ":id" => $this->id,
+            ":quantity" => $this->quantity - $quantity,
+        ]);
+    }
+
     /**
      * @param Category $category
      * @return Item[]
