@@ -74,7 +74,9 @@ $(function () {
     let itemsTable = $("#dt_items").DataTable({
         "columnDefs": [
             {className: "text-right align-middle", "targets": "_all"}
-        ]
+        ],
+        "ordering": true,
+        "order": []
     });
 
     showSearchResults(itemsTable);

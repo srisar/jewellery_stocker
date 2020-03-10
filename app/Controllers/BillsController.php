@@ -18,10 +18,42 @@ class BillsController
     public function viewBills(AppRequest $request)
     {
 
-        $bills = Bill::findAll();
+        $q = $request->getParams()->getString('q') ?? null;
 
-        View::setData('bills', $bills);
-        View::render('bills/view_bills.view');
+        if (!is_null($q)) {
+
+            $start_date = $request->getParams()->getString('date_start');
+            $end_date = $request->getParams()->getString('date_end');
+
+            if (explode(":", $q)[0] == "id") {
+                $bills = empty(Bill::find(explode(":", $q)[1])) ? [] : [Bill::find(explode(":", $q)[1])];
+
+            } else {
+
+                if (!is_null($start_date) && !is_null($end_date)) {
+
+                    $bills = Bill::search($q, [$start_date, $end_date]);
+
+                } else {
+                    $bills = Bill::search($q);
+                }
+            }
+
+
+            View::setData('bills', $bills);
+            View::setData('title', "Search results for {$q}");
+
+            View::render('bills/view_bills.view');
+
+        } else {
+            $bills = Bill::findAll();
+
+            View::setData('bills', $bills);
+            View::setData('title', "Recent bills");
+
+            View::render('bills/view_bills.view');
+        }
+
 
     }
 

@@ -256,13 +256,17 @@ $(function () {
     let dTSearchItems = $("#dt_search_bill_items").DataTable({
         "columnDefs": [
             {className: "text-right align-middle", "targets": "_all"}
-        ]
+        ],
+        "ordering": true,
+        "order": []
     });
 
     let dTBillItems = $("#dt_bill_items").DataTable({
         "columnDefs": [
             {className: "text-right align-middle", "targets": "_all"}
-        ]
+        ],
+        "ordering": true,
+        "order": []
     });
 
 

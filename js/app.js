@@ -4,7 +4,9 @@ $(function () {
         "pageLength": 50,
         "columnDefs": [
             {className: "text-right align-middle", "targets": "_all"}
-        ]
+        ],
+        "ordering": true,
+        "order": []
     });
 
     $(".date_field").daterangepicker({
