@@ -1,7 +1,10 @@
 $(function () {
 
     $(".data_table").DataTable({
-        "pageLength": 50
+        "pageLength": 50,
+        "columnDefs": [
+            {className: "text-right align-middle", "targets": "_all"}
+        ]
     });
 
     $(".date_field").daterangepicker({

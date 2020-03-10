@@ -41,8 +41,8 @@ $selectedCategory = View::getData('selected_category')
                         <thead>
                         <tr>
                             <th>Category</th>
-                            <th class="text-right">No. Items</th>
-                            <th class="text-right">Total Value</th>
+                            <th>No. Items</th>
+                            <th>Total Value</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -52,9 +52,9 @@ $selectedCategory = View::getData('selected_category')
 
                             <tr>
                                 <td><a href="<?= App::createURL('/items', ['category_id' => $category->id]) ?>"><?= $category ?></a></td>
-                                <td class="text-right"><?= $category->getItemsCount() ?></td>
-                                <td class="text-right"></td>
-                                <td class="text-right">
+                                <td><?= $category->getItemsCount() ?></td>
+                                <td><?= $category->getTotalValueString() ?></td>
+                                <td>
                                     <div class="category_edit">
                                         <a class="btn btn-sm btn-warning" href="<?= App::createURL('/categories/edit', ['id' => $category->id]) ?>">Edit</a>
                                     </div>

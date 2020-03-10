@@ -4,6 +4,7 @@
 namespace Jman\Models;
 
 
+use Jman\Core\App;
 use Jman\Core\Database;
 use stdClass;
 
@@ -97,6 +98,25 @@ class Category
         $statement->execute([$this->id]);
 
         return ($statement->fetchObject(stdClass::class))->total;
+    }
+
+
+    public function getTotalValue()
+    {
+        $db = Database::get_instance();
+        $statement = $db->prepare("
+        select sum(i.stock_price) as total from items i
+                join categories c on i.category_id = c.id
+                where c.id = ?
+        ");
+        $statement->execute([$this->id]);
+
+        return ($statement->fetchObject(stdClass::class))->total;
+    }
+
+    public function getTotalValueString()
+    {
+        return App::toCurrencyString($this->getTotalValue());
     }
 
 }
