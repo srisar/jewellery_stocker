@@ -22,6 +22,7 @@ class ItemsController
 
 
         $categoryId = $request->getParams()->getInt('category_id');
+        $showEmpty = $request->getParams()->getInt('se');
 
         if (!is_null($categoryId)) {
 
@@ -29,7 +30,12 @@ class ItemsController
 
             if (!empty($category)) {
 
-                $items = Item::getItemsByCategory($category);
+                if (!empty($showEmpty)) {
+                    $items = Item::getItemsByCategory($category, true);
+                } else {
+                    $items = Item::getItemsByCategory($category);
+                }
+
 
                 View::setData('items', $items);
                 View::setData('title', "Items by {$category}");
@@ -43,10 +49,16 @@ class ItemsController
 
         }
 
-        $items = Item::findAll();
+        if (!empty($showEmpty)) {
+            $items = Item::findAll(1000, true);
+            View::setData('title', "Recently added items including empty items");
+        } else {
+            View::setData('title', "Recently added items");
+            $items = Item::findAll();
+        }
 
         View::setData('items', $items);
-        View::setData('title', "All Items");
+
         View::render('/items/index.view');
         return;
     }
@@ -210,15 +222,22 @@ class ItemsController
     public function actionSearchItems(AppRequest $request)
     {
         $keyword = $request->getParams()->getString('keyword') ?? "";
+        $showEmpty = $request->getParams()->getString('show_empty') ?? 'false';
+
 
         try {
 
-            $items = Item::search($keyword);
+            if ($showEmpty == 'false') {
+                $items = Item::search($keyword);
+            } else {
+                $items = Item::search($keyword, true);
+            }
 
             if (!empty($items)) {
                 foreach ($items as $item) {
                     $item->category_name = $item->getCategory()->category_name;
                     $item->stock_price_string = $item->getStockPriceString();
+                    $item->total_value_string = $item->getTotalValueString();
                 }
             }
 

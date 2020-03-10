@@ -13,7 +13,7 @@ class Item
     public $id, $item_name, $description, $stock_price, $quantity, $category_id, $weight, $gold_quality, $category_name;
     public $added_on, $updated_at;
 
-    public $stock_price_string;
+    public $stock_price_string, $total_value_string;
 
 
     /**
@@ -33,12 +33,19 @@ class Item
 
     /**
      * @param int $limit
+     * @param bool $showEmpty
      * @return Item[]
      */
-    public static function findAll(int $limit = 1000)
+    public static function findAll(int $limit = 1000, $showEmpty = false)
     {
         $db = Database::get_instance();
-        $statement = $db->prepare("SELECT * FROM items order by added_on LIMIT :limit_val");
+
+        if ($showEmpty) {
+            $statement = $db->prepare("SELECT * FROM items order by added_on LIMIT :limit_val");
+        } else {
+            $statement = $db->prepare("SELECT * FROM items WHERE quantity > 0 order by added_on LIMIT :limit_val");
+        }
+
         $statement->bindValue(':limit_val', $limit, PDO::PARAM_INT);
         $statement->execute();
 
@@ -109,12 +116,17 @@ class Item
 
     /**
      * @param Category $category
+     * @param bool $showEmpty
      * @return Item[]
      */
-    public static function getItemsByCategory(Category $category)
+    public static function getItemsByCategory(Category $category, $showEmpty = false)
     {
         $db = Database::get_instance();
-        $statement = $db->prepare("SELECT * FROM items WHERE category_id=:category_id order by added_on");
+        if($showEmpty){
+            $statement = $db->prepare("SELECT * FROM items WHERE category_id=:category_id order by added_on");
+        }else{
+            $statement = $db->prepare("SELECT * FROM items WHERE category_id=:category_id AND quantity > 0 order by added_on");
+        }
         $statement->execute([':category_id' => $category->id]);
 
         return $statement->fetchAll(PDO::FETCH_CLASS, Item::class);
@@ -122,13 +134,21 @@ class Item
 
     /**
      * @param $keyword
+     * @param bool $showEmpty
      * @param int $limit
      * @return Item[]
      */
-    public static function search($keyword, $limit = 100)
+    public static function search($keyword, $showEmpty = false, $limit = 100)
     {
         $db = Database::get_instance();
-        $statement = $db->prepare("SELECT * FROM items WHERE item_name LIKE :key OR description LIKE :key order by added_on LIMIT :limit_val");
+
+        if($showEmpty){
+            $statement = $db->prepare("SELECT * FROM items WHERE (item_name LIKE :key OR description LIKE :key)  order by added_on LIMIT :limit_val");
+        }else{
+            $statement = $db->prepare("SELECT * FROM items WHERE (item_name LIKE :key OR description LIKE :key) AND quantity > 0 order by added_on LIMIT :limit_val");
+        }
+
+
         $statement->bindValue(':limit_val', $limit, PDO::PARAM_INT);
         $statement->bindValue(':key', "%" . $keyword . "%");
         $statement->execute();

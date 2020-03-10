@@ -32,6 +32,31 @@ class App
         }
     }
 
+
+    public static function updateURL($param = [])
+    {
+
+        $currentURL = App::getSiteURL() . $_SERVER['REDIRECT_URL'];
+
+
+        if (empty($_SERVER['QUERY_STRING'])) {
+
+            $query = http_build_query($param);
+            return $currentURL . '?' . $query;
+
+        } else {
+
+            $queryString = $_SERVER['QUERY_STRING'];
+
+            parse_str($queryString, $pparam);
+
+            $allParams = array_merge($pparam, $param);
+
+            $query = http_build_query($allParams);
+            return $currentURL . '?' . $query;
+        }
+    }
+
     public static function redirect($path = '/', $params = [])
     {
 

@@ -9,6 +9,8 @@ use Jman\Models\Item;
 $items = View::getData('items');
 
 $title = View::getData('title');
+
+
 ?>
 
 <?php include_once BASE_PATH . "/views/_header_with_top_nav.inc.php"; ?>
@@ -19,17 +21,48 @@ $title = View::getData('title');
 
         <div class="col-12">
 
+            <div class="alert alert-primary">
+                <div class="row">
+
+                    <div class="col">
+
+                        <div class="input-group">
+                            <input type="text" id="field_query" name="field_query" class="form-control" placeholder="search for items">
+                            <div class="input-group-append">
+                                <button class="btn btn-success" id="btn_search">Search</button>
+                                <div class="input-group-text">
+
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="check_show_empty" name="check_show_empty">
+                                        <label class="custom-control-label" for="check_show_empty">Show empty items</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
             <div class="card">
-                <div class="card-header"><?= $title ?></div>
+                <div class="card-header">
+                    <div class="float-left" id="txt_title"><?= $title ?></div>
+                    <div class="float-right">
+                        <a href="<?= App::updateURL(['se' => 1]) ?>" class="btn btn-sm btn-dark">Show empty items</a>
+                        <a href="<?= App::updateURL(['se' => 0]) ?>" class="btn btn-sm btn-dark">Hide empty items</a>
+                    </div>
+                </div>
                 <div class="card-body">
 
-                    <table class="table table-bordered table-striped data_table table-responsive-sm">
+                    <table class="table table-bordered table-striped table-responsive-sm" id="dt_items">
                         <thead>
                         <tr>
                             <th>Item</th>
                             <th>Description</th>
                             <th>Category</th>
-                            <th>Gold Quality</th>
+                            <th class="text-right">Gold Quality</th>
                             <th class="text-right">Weight</th>
                             <th class="text-right">Stock Price</th>
                             <th class="text-right">Quantity</th>
@@ -42,8 +75,8 @@ $title = View::getData('title');
                                 <td><a href="<?= App::createURL('/items/edit', ['id' => $item->id]) ?>"><?= stripslashes($item->item_name) ?></a></td>
                                 <td><?= $item->description ?></td>
                                 <td><?= $item->getCategory() ?></td>
-                                <td><?= $item->gold_quality ?></td>
-                                <td><?= $item->weight ?></td>
+                                <td class="text-right"><?= $item->gold_quality ?></td>
+                                <td class="text-right"><?= $item->weight ?></td>
                                 <td class="text-right"><?= $item->getStockPriceString() ?></td>
                                 <td class="text-right"><?= $item->quantity ?></td>
                                 <td class="text-right"><?= $item->getTotalValueString() ?></td>
@@ -62,5 +95,5 @@ $title = View::getData('title');
 
 </div>
 
-<script src="<?= App::getSiteURL() ?>/assets/js/views/items/add_items.view-min.js" defer></script>
+<script src="<?= App::getSiteURL() ?>/assets/js/views/items/view_all_items.view-min.js" defer></script>
 <?php include BASE_PATH . "/views/_footer.inc.php"; ?>
