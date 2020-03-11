@@ -116,7 +116,7 @@ function updateBillTable(billTable) {
 
         chosenItems[item.id] = {
             "id": item.id,
-            "quantity": item.quantity,
+            "quantity": 1,
             "price": item.stock_price
         }
 
