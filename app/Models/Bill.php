@@ -5,8 +5,11 @@ namespace Jman\Models;
 
 
 use Jman\Core\App;
+use Jman\Core\AppSession;
 use Jman\Core\Database;
+use Jman\Core\LoginManager;
 use PDO;
+use PDOException;
 
 class Bill
 {
@@ -26,11 +29,11 @@ class Bill
 
         if (empty($date_range)) {
             $statement = $db->prepare("SELECT * FROM bills 
-                            where customer_name like :key OR contact_number LIKE :key OR address like :key 
+                            where (customer_name like :key OR contact_number LIKE :key OR address like :key) AND (deleted != 1) 
                             order by bill_date DESC LIMIT :limit_val");
         } else {
             $statement = $db->prepare("SELECT * FROM bills 
-                            where (customer_name like :key OR contact_number LIKE :key OR address like :key) AND (bill_date BETWEEN :s_date AND :e_date) 
+                            where (customer_name like :key OR contact_number LIKE :key OR address like :key) AND (bill_date BETWEEN :s_date AND :e_date) AND (deleted != 1) 
                             order by bill_date DESC LIMIT :limit_val");
 
             $statement->bindValue(':s_date', $date_range[0]);
@@ -55,7 +58,7 @@ class Bill
     public static function findAll(int $limit = 1000)
     {
         $db = Database::get_instance();
-        $statement = $db->prepare("SELECT * FROM bills order by bill_date DESC LIMIT :limit_val");
+        $statement = $db->prepare("SELECT * FROM bills WHERE deleted != 1 order by added_on DESC LIMIT :limit_val");
         $statement->bindValue(':limit_val', $limit, PDO::PARAM_INT);
         $statement->execute();
 
@@ -105,7 +108,7 @@ class Bill
                 $item = Item::find($item['id']);
                 $item->reduceQuantity($billItem->quantity);
 
-                $bill_total += (float)$billItem->price;
+                $bill_total += ((float)$billItem->price * $billItem->quantity);
 
             }
 
@@ -117,7 +120,7 @@ class Bill
 
             return $bill;
 
-        } catch (\PDOException $exception) {
+        } catch (PDOException $exception) {
             $db->rollBack();
             throw $exception;
         }
@@ -165,9 +168,54 @@ class Bill
         return BillItem::findByBill($this);
     }
 
+    /**
+     * @return string
+     */
     public function getBillTotalString()
     {
         return App::toCurrencyString($this->bill_total);
+    }
+
+    /**
+     *
+     */
+    public function delete()
+    {
+        $db = Database::get_instance();
+        try {
+
+            $db->beginTransaction();
+
+            // find all the items from the bill and return their quantity back to items table
+
+            $billItems = $this->getBillItems();
+
+            foreach ($billItems as $billItem) {
+
+                $item = $billItem->getItem();
+                $item->quantity = $item->quantity + $billItem->quantity;
+
+                $item->update();
+
+            }
+
+
+            $statement = $db->prepare("UPDATE bills SET deleted = '1', deleted_by = :user_id WHERE id = :id;");
+
+            $statement->bindValue(':user_id', LoginManager::getUserId());
+            $statement->bindValue(':id', $this->id);
+
+            $statement->execute();
+
+            $db->commit();
+
+            return true;
+
+        } catch (PDOException $exception) {
+            $db->rollBack();
+            throw $exception;
+        }
+
     }
 
 }

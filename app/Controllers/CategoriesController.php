@@ -4,10 +4,8 @@
 namespace Jman\Controllers;
 
 
-use http\Env\Response;
 use Jman\Core\App;
 use Jman\Core\AppRequest;
-use Jman\Core\Database;
 use Jman\Core\JsonResponse;
 use Jman\Core\View;
 use Jman\Models\Category;
@@ -64,22 +62,35 @@ class CategoriesController
         $categoryName = $request->getParams()->getString('category_name');
 
         if (!empty($categoryName)) {
+
             $newCategory = new Category();
             $newCategory->init($categoryName);
 
-            $result = $newCategory->insert();
+            $exists = Category::existing($categoryName);
 
-            if (!empty($result)) {
-                $response = new JsonResponse(['category' => Category::find($result)]);
-                $response->emit();
+            if(!$exists){
+                $result = $newCategory->insert();
+
+                if (!empty($result)) {
+                    $response = new JsonResponse(['category' => Category::find($result)]);
+                    $response->emit();
+
+                    return;
+
+                } else {
+                    $response = new JsonResponse(['category' => null]);
+                    $response->setStatusCode400();
+                    $response->emit();
+                }
 
                 return;
-
-            } else {
-                $response = new JsonResponse(['category' => null]);
+            }else{
+                $response = new JsonResponse("Category already exists.");
                 $response->setStatusCode400();
                 $response->emit();
             }
+
+
 
             return;
 

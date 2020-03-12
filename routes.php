@@ -41,3 +41,5 @@ Router::add('/items/get', ItemsController::class, 'actionGetItems');
 Router::add('/bills', BillsController::class, 'viewBills');
 Router::add('/bills/add', BillsController::class, 'viewAddBill');
 Router::add('/bills/add-action', BillsController::class, 'actionAddBill');
+Router::add('/bills/edit', BillsController::class, 'viewEditBill');
+Router::add('/bills/delete', BillsController::class, 'actionDeleteBill');

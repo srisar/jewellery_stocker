@@ -4,6 +4,7 @@
 namespace Jman\Controllers;
 
 
+use Jman\Core\App;
 use Jman\Core\AppRequest;
 use Jman\Core\Database;
 use Jman\Core\JsonResponse;
@@ -14,7 +15,9 @@ use Jman\Models\Item;
 class BillsController
 {
 
-
+    /**
+     * @param AppRequest $request
+     */
     public function viewBills(AppRequest $request)
     {
 
@@ -57,6 +60,38 @@ class BillsController
 
     }
 
+    /**
+     * @param AppRequest $request
+     */
+    public function viewEditBill(AppRequest $request)
+    {
+        $id = $request->getParams()->getInt('id');
+
+        if (!is_null($id)) {
+
+            $bill = Bill::find($id);
+
+            if (!is_null($bill)) {
+
+                // display the edit bill view
+                View::setData('bill', $bill);
+                View::render('/bills/edit_bill.view');
+
+
+            } else {
+                App::redirect('/bills');
+            }
+
+
+        } else {
+            App::redirect('/bills');
+        }
+
+    }
+
+    /**
+     * @param AppRequest $request
+     */
     public function viewAddBill(AppRequest $request)
     {
 
@@ -119,6 +154,46 @@ class BillsController
 
         }
 
+    }
+
+    /**
+     * Deletes the bill, actually set deleted as 1
+     *
+     * @param AppRequest $request
+     */
+    public function actionDeleteBill(AppRequest $request)
+    {
+        $id = $request->getParams()->getInt('id');
+
+        if (!is_null($id)) {
+
+            try {
+
+                $bill = Bill::find($id);
+
+                if (!empty($bill)) {
+
+                    if ($bill->delete()) {
+
+                        $response = new JsonResponse("Deleted");
+                        $response->emit();
+
+                    } else {
+                        $response = new JsonResponse("Error");
+                        $response->setStatusCode400();
+                        $response->emit();
+                    }
+
+                }
+
+
+            } catch (\PDOException $exception) {
+                $response = new JsonResponse($exception->getMessage());
+                $response->setStatusCode400();;
+                $response->emit();
+            }
+
+        }
 
     }
 

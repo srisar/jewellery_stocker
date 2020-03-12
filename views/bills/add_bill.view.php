@@ -19,9 +19,17 @@ use Jman\Models\Category;
                 <div class="card-header">Add new bill</div>
                 <div class="card-body">
 
-                    <div class="form-group">
-                        <label for="field_item_name">Bill date</label>
-                        <input type="text" class="form-control date_field" id="field_bill_date" value="">
+                    <div class="row mb-3">
+                        <div class="col-6">
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Bill date</span>
+                                </div>
+                                <input type="text" class="form-control date_field" id="field_bill_date">
+                            </div>
+
+                        </div>
                     </div>
 
                     <div class="row">
