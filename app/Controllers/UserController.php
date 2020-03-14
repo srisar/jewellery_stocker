@@ -4,35 +4,134 @@
 namespace Jman\Controllers;
 
 use Exception;
+use Jman\Core\Database;
 use Jman\Core\Images\ImageWorker;
 use Jman\Core\Images\UploadedImageFile;
 use Jman\Core\App;
 use Jman\Core\AppRequest;
 use Jman\Core\AppSession;
+use Jman\Core\JsonResponse;
 use Jman\Core\LoginManager;
 use Jman\Core\View;
+use Jman\Models\User;
 use Jman\Models\UserModel;
 
 class UserController
 {
 
     /**
+     * View all users, only accessible to admin users
+     * @param AppRequest $request
+     */
+    public function viewUsers(AppRequest $request)
+    {
+        $users = UserModel::all();
+
+        View::setData('users', $users);
+        View::render('users/index.view');
+
+    }
+
+    /**
+     * @param AppRequest $request
+     */
+    public function viewAddUser(AppRequest $request)
+    {
+        View::render('users/add_user.view');
+    }
+
+    /**
+     * @param AppRequest $request
+     */
+    public function actionAddUser(AppRequest $request)
+    {
+
+        $fields = [
+            'first_name' => $request->getParams()->getString('first_name'),
+            'last_name' => $request->getParams()->getString('last_name'),
+            'password' => $request->getParams()->getString('password'),
+            'role' => $request->getParams()->getString('role'),
+            'username' => $request->getParams()->getString('username'),
+        ];
+
+        $isValid = true;
+
+        foreach ($fields as $field => $value) {
+            if (empty($value) || is_null($value)) {
+                $response = new JsonResponse("Empty field {$field}");
+                $response->setStatusCode400();
+                $response->emit();
+                return;
+            }
+        }
+
+        $existingUser = UserModel::findByUsername($fields['username']);
+
+        if (is_null($existingUser)) {
+
+            $user = new User();
+            $user->setUsername($fields['username']);
+            $user->setFirstName($fields['first_name']);
+            $user->setLastName($fields['last_name']);
+            $user->setPassword($fields['password']);
+            $user->setRole($fields['role']);
+
+            if (UserModel::save($user)) {
+
+                $lastInsertedId = (Database::get_instance())->lastInsertId();
+
+                $user = UserModel::find($lastInsertedId);
+
+                $user_ = [
+                    'id' => $user->getId(),
+                    'username' => $user->getUsername(),
+                    'first_name' => $user->getFirstName(),
+                ];
+
+                $response = new JsonResponse($user_);
+                $response->setStatusCode200();
+                $response->emit();
+                return;
+
+            }
+
+        } else {
+
+            $user = [
+                'id' => $existingUser->getId(),
+                'username' => $existingUser->getUsername(),
+                'first_name' => $existingUser->getFirstName(),
+            ];
+
+            $response = new JsonResponse(["message" => "Username already exists.", "user" => $user]);
+            $response->setStatusCode400();
+            $response->emit();
+            return;
+        }
+
+    }
+
+    /**
      * Show manage user page
      * @param AppRequest $request
      */
-    public function manage_user(AppRequest $request)
+    public function viewEditUser(AppRequest $request)
     {
 
-        LoginManager::isLoggedInOrRedirect();
 
         try {
             $user_id = $request->getParams()->getInt('id');
+
+            if ($user_id !== LoginManager::getUserId()) {
+                App::redirect('/');
+                return;
+            }
 
             $user = UserModel::find($user_id);
 
             if (!empty($user)) {
                 View::setData('user', $user);
-                View::render('users/manage_user.view');
+                View::render('users/edit_user.view');
             } else {
                 App::redirect('/');
             }
@@ -47,14 +146,14 @@ class UserController
      * Update the user details
      * @param AppRequest $request
      */
-    public function updating_user(AppRequest $request)
+    public function actionEditUser(AppRequest $request)
     {
 
         try {
             LoginManager::isLoggedInOrRedirect();
 
             $change_password = false;
-            $all_ok = true;
+            $all_ok          = true;
 
             $csrf_token = $request->getCSRFToken();
 
@@ -65,11 +164,12 @@ class UserController
                     'last_name' => $request->getParams()->getString('last_name'),
                     'first_name' => $request->getParams()->getString('first_name'),
                     'username' => $request->getParams()->getString('username'),
+                    'role' => $request->getParams()->getString('role'),
                 ];
 
                 if ($request->getParams()->has('password_string')) {
-                    $change_password = true;
-                    $fields['password_string'] = $request->getParams()->getString('password_string');
+                    $change_password                   = true;
+                    $fields['password_string']         = $request->getParams()->getString('password_string');
                     $fields['confirm_password_string'] = $request->getParams()->getString('confirm_password_string');
                 }
 
@@ -78,6 +178,7 @@ class UserController
                 // Add first name and last name to the current user.
                 $currentUser->setFirstName($fields['first_name']);
                 $currentUser->setLastName($fields['last_name']);
+                $currentUser->setRole($fields['role']);
 
 
                 if ($currentUser->getUsername() != $fields['username']) {
@@ -108,7 +209,7 @@ class UserController
 
                     // Finally, update the user with new data.
                     if (UserModel::update($currentUser)) {
-                        App::redirect("/user/manage", ["id" => $currentUser->getId()]);
+                        App::redirect("/users/edit", ["id" => $currentUser->getId()]);
                     }
                 }
 
@@ -120,42 +221,6 @@ class UserController
             die($ex->getMessage());
         }
     }
-
-
-    /**
-     * Update user profile image.
-     * @param AppRequest $request
-     */
-    public function update_profile_image(AppRequest $request)
-    {
-
-        try {
-
-            LoginManager::isLoggedInOrRedirect();
-
-            $user_id = $request->getParams()->getInt('user_id');
-            $user = UserModel::find($user_id);
-
-            $profileImage = new UploadedImageFile($request->getFiles()->get('profile_pic'));
-
-            if ($profileImage->uploadImage()) {
-
-                $imageWorker = new ImageWorker($profileImage->getImageFileInstance());
-                $resizedImageFile = $imageWorker->resize();
-
-
-            }
-
-        } catch (Exception $ex) {
-            die($ex->getMessage());
-        }
-
-    }
-
-    /* =======================================================
-     * Helper functions
-     *
-     *========================================================*/
 
 
 }

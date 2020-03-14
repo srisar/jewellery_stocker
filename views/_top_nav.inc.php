@@ -43,7 +43,10 @@ use Jman\core\LoginManager;
 
         <div class="my-2 my-lg-0">
             <?php if (LoginManager::isLoggedIn()): ?>
-                Welcome, <a href="<?= App::createURL('/user/manage', ['id' => LoginManager::getUserId()]) ?>"><?= LoginManager::getUsername() ?></a>
+                Welcome, <a href="<?= App::createURL('/users/edit', ['id' => LoginManager::getUserId()]) ?>"><?= LoginManager::getUsername() ?></a>
+                <?php if(LoginManager::getUserRole() == \Jman\Models\User::ROLE_ADMIN): ?>
+                    <a href="<?= App::createURL('/users') ?>" class="btn btn-success ml-2">Manage Users</a>
+                <?php endif; ?>
                 <a class="btn btn-warning ml-2" href="<?= App::createURL('/logout') ?>">logout</a>
             <?php else: ?>
                 <a class="btn btn-success ml-2" href="<?= App::createURL('/login') ?>">Login</a>

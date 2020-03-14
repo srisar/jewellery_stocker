@@ -9,12 +9,15 @@ use Jman\Controllers\PageController;
 use Jman\Controllers\TestController;
 use Jman\Controllers\UserController;
 use Jman\Core\Router;
+use Jman\Models\User;
 
 Router::add('/', PageController::class, 'index');
-Router::add('/users', UserController::class, 'index');
-Router::add('/user/manage', UserController::class, 'manage_user');
-Router::add('/user/updating', UserController::class, 'updating_user');
-Router::add('/user/profile-image-update', UserController::class, 'update_profile_image');
+
+Router::add('/users', UserController::class, 'viewUsers', true, User::ROLE_ADMIN);
+Router::add('/users/add', UserController::class, 'viewAddUser');
+Router::add('/users/add-action', UserController::class, 'actionAddUser');
+Router::add('/users/edit', UserController::class, 'viewEditUser');
+Router::add('/users/edit-action', UserController::class, 'actionEditUser');
 
 Router::add('/test', TestController::class, 'test_a', false);
 

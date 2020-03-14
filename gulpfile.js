@@ -32,6 +32,7 @@ exports.viewsJs = viewsJs;
 exports.scss = scss;
 
 exports.default = function () {
+    parallel(viewsJs, commonJs, scss);
     watch('js/*.js', commonJs);
     watch('js/views/**/*.js', viewsJs);
     watch('scss/**/*.scss', scss);

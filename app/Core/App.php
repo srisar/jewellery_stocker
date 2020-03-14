@@ -57,6 +57,11 @@ class App
         }
     }
 
+    /**
+     * Redirect to the given url
+     * @param string $path
+     * @param array $params
+     */
     public static function redirect($path = '/', $params = [])
     {
 
@@ -71,12 +76,25 @@ class App
     }
 
     /**
+     * Converts the given string float/int value to currency format
+     * Eg. Rs. 1,500.00
      * @param $value
      * @return string
      */
     public static function toCurrencyString($value)
     {
         return sprintf("Rs. %s", number_format($value, 2));
+    }
+
+
+    public static function toDate($timestamp)
+    {
+        return date('Y-m-d', strtotime($timestamp));
+    }
+
+    public static function toDateTime($timestamp)
+    {
+        return date('Y-m-d g:i:s a', strtotime($timestamp));
     }
 
 }

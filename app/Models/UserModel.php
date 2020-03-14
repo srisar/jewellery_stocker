@@ -11,6 +11,7 @@ class UserModel
 {
 
     /**
+     * Find a user with given id
      * @param int $id
      * @return User
      */
@@ -31,6 +32,7 @@ class UserModel
     }
 
     /**
+     * Find all users in db
      * @return User[]
      */
     public static function all(): ?array
@@ -49,6 +51,9 @@ class UserModel
     }
 
 
+    /**
+     * @param User $user
+     */
     public function delete(User $user)
     {
         // TODO: Implement delete() method.
@@ -68,7 +73,8 @@ class UserModel
             UPDATE users
             SET username = :un,
                 first_name = :fn,
-                last_name = :ln
+                last_name = :ln,
+                role = :role
             WHERE id = :id
             ";
 
@@ -78,6 +84,7 @@ class UserModel
                 ':un' => $user->getUsername(),
                 ':fn' => $user->getFirstName(),
                 ':ln' => $user->getLastName(),
+                ':role' => $user->getRole(),
                 ':id' => $user->getId()
             ]);
 
@@ -87,6 +94,7 @@ class UserModel
             SET username = :un,
                 first_name = :fn,
                 last_name = :ln,
+                role = :role,
                 password_string = :ps
             WHERE id = :id
             ";
@@ -97,6 +105,7 @@ class UserModel
                 ':un' => $user->getUsername(),
                 ':fn' => $user->getFirstName(),
                 ':ln' => $user->getLastName(),
+                ':role' => $user->getRole(),
                 ':ps' => $user->generatePasswordString(),
                 ':id' => $user->getId()
             ]);
@@ -113,8 +122,8 @@ class UserModel
     {
 
         $sql = "
-        INSERT INTO users(username, first_name, last_name, password_string) 
-        VALUES(:un, :fn, :ln, :ps)
+        INSERT INTO users(username, first_name, last_name, password_string, role) 
+        VALUES(:un, :fn, :ln, :ps, :role)
         ";
 
         $db = Database::get_instance();
@@ -123,7 +132,8 @@ class UserModel
             ':un' => $user->getUsername(),
             ':fn' => $user->getFirstName(),
             ':ln' => $user->getLastName(),
-            ':ps' => $user->getPasswordString(),
+            ':ps' => $user->generatePasswordString(),
+            ':role' => $user->getRole(),
         ]);
     }
 
@@ -145,9 +155,5 @@ class UserModel
             return null;
     }
 
-    public function updateProfilePic($fileName)
-    {
-
-    }
 
 }

@@ -15,6 +15,9 @@ use Jman\Exceptions\KeyNotFoundException;
 class LoginController
 {
 
+    /**
+     * @param AppRequest $request
+     */
     public function show_login_page(AppRequest $request)
     {
         if (LoginManager::isLoggedIn())
@@ -23,6 +26,9 @@ class LoginController
 
     }
 
+    /**
+     * @param AppRequest $request
+     */
     public function verify_login(AppRequest $request)
     {
 
@@ -52,6 +58,9 @@ class LoginController
 
     }
 
+    /**
+     *
+     */
     public function logout()
     {
         if (LoginManager::isLoggedIn()) {

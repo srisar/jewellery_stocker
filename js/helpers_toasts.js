@@ -1,4 +1,4 @@
-function _toast(message, title, bodyClass) {
+function _toast(message, title, bodyClass, textColor) {
 
     $("#toast_container").append(`
             <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -8,7 +8,7 @@ function _toast(message, title, bodyClass) {
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="toast-body ${bodyClass} text-black">
+                <div class="toast-body ${bodyClass} text-${textColor}">
                     ${message}
                 </div>
             </div>`);
@@ -19,19 +19,19 @@ function _toast(message, title, bodyClass) {
 }
 
 function showInfoToast(message) {
-    _toast(message, "Information", "bg-info");
+    _toast(message, "Information", "bg-info", 'black');
 }
 
 function showSuccessToast(message) {
-    _toast(message, "Success", "bg-success");
+    _toast(message, "Success", "bg-success", 'white');
 }
 
 function showAlertToast(message) {
-    _toast(message, "Alert", "bg-danger");
+    _toast(message, "Alert", "bg-danger", 'white');
 }
 
 function showWarningToast(message) {
-    _toast(message, "Warning", "bg-warning")
+    _toast(message, "Warning", "bg-warning", 'white')
 }
 
 function cleanToastContainer() {

@@ -8,7 +8,6 @@ include_once BASE_PATH . "/views/_header_with_top_nav.inc.php"; ?>
         <div class="col-12">
 
 
-
         </div><!--.col-->
     </div><!--.row-->
 

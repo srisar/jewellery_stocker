@@ -1,6 +1,7 @@
 <?php
 
 
+use Jman\Core\App;
 use Jman\Core\View;
 use Jman\Models\User;
 
@@ -15,37 +16,52 @@ try {
 
 ?>
 
-<?php include_once BASE_PATH . "/views/_header.inc.php"; ?>
+<?php include_once BASE_PATH . "/views/_header_with_top_nav.inc.php"; ?>
 
 <div class="container-fluid">
 
-    <div class="row">
-        <div class="col-12">
+    <div class="row justify-content-center">
 
-            <table class="table table-striped table-bordered">
-                <thead>
-                <tr>
-                    <th>Full Name</th>
-                    <th>Username</th>
-                    <th>Created on</th>
-                </tr>
-                </thead>
+        <div class="col-12 col-lg-6">
 
-                <tbody>
+            <div class="card">
+                <div class="card-header">
+                    <div class="float-left">Manage users</div>
 
-                <?php foreach ($users as $user): ?>
+                </div>
+                <div class="card-body">
+                    <div class="float-right mb-3"><a href="<?= App::createURL('/users/add') ?>" class="btn btn-primary">Add a user</a></div>
 
-                    <tr>
-                        <td><?= $user->getFullName() ?></td>
-                        <td><?= $user->getUsername() ?></td>
-                        <td><?= $user->getCreatedAt() ?></td>
-                    </tr>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Username</th>
+                            <th>Type</th>
+                            <th>Created on</th>
+                        </tr>
+                        </thead>
 
-                <?php endforeach; ?>
+                        <tbody>
 
-                </tbody>
+                        <?php foreach ($users as $user): ?>
 
-            </table>
+                            <tr>
+                                <td><a href="<?= App::createURL('/users/edit', ['id' => $user->getId()]) ?>"><?= $user->getFullName() ?></a></td>
+                                <td><?= $user->getUsername() ?></td>
+                                <td><?= $user->getRole() ?></td>
+                                <td><?= App::toDate($user->getCreatedOn()) ?></td>
+                            </tr>
+
+                        <?php endforeach; ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div><!--.card-body-->
+            </div><!--.card-->
+
 
         </div>
 
@@ -55,4 +71,4 @@ try {
 
 </div>
 
-<?php include BASE_PATH. "/views/_footer.inc.php"; ?>
+<?php include BASE_PATH . "/views/_footer.inc.php"; ?>

@@ -18,13 +18,20 @@ class User
     /** @var string */
     private $password;
     /** @var string */
-    private $created_at;
+    private $created_on;
     /** @var string */
-    private $updated_at;
+    private $updated_on;
+    /** @var string */
+    private $role;
 
 
-    const TYPE_ADMIN = 1;
-    const TYPE_USER = 2;
+    const ROLE_ADMIN = 'ADMIN';
+    const ROLE_USER = 'USER';
+
+    const USER_ROLES = [
+        'ADMIN' => 'Administrator',
+        'USER' => 'User'
+    ];
 
     /**
      * @return int
@@ -84,7 +91,6 @@ class User
 
     /**
      * @param string $last_name
-     * @return User
      */
     public function setLastName(string $last_name)
     {
@@ -126,18 +132,18 @@ class User
     /**
      * @return string
      */
-    public function getCreatedAt(): ?string
+    public function getCreatedOn(): ?string
     {
-        return $this->created_at;
+        return $this->created_on;
     }
 
 
     /**
      * @return string
      */
-    public function getUpdatedAt(): ?string
+    public function getUpdatedOn(): ?string
     {
-        return $this->updated_at;
+        return $this->updated_on;
     }
 
 
@@ -155,5 +161,13 @@ class User
         return password_hash($this->getPassword(), PASSWORD_DEFAULT);
     }
 
+
+    public function getRole(){
+        return $this->role;
+    }
+
+    public function setRole($role){
+        $this->role = $role;
+    }
 
 }
