@@ -101,7 +101,7 @@ class LoginManager
      */
     public static function isAdmin()
     {
-        return AppSession::getData(self::USER_ROLE) == User::ROLE_ADMIN ? true : false;
+        return AppSession::getData(self::USER_ROLE) == User::ROLE_ADMIN;
     }
 
     /**
@@ -109,7 +109,7 @@ class LoginManager
      */
     public static function isUser()
     {
-        return AppSession::getData(self::USER_ROLE) == User::ROLE_USER ? true : false;
+        return AppSession::getData(self::USER_ROLE) == User::ROLE_USER;
     }
 
     /**

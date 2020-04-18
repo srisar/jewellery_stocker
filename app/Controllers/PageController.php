@@ -14,7 +14,7 @@ class PageController
     public function index(AppRequest $request)
     {
 
-        LoginManager::isLoggedInOrRedirect();
+//        LoginManager::isLoggedInOrRedirect();
 
         View::render('pages/index.view');
     }

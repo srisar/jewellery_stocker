@@ -23,7 +23,7 @@ Router::add('/test', TestController::class, 'test_a', false);
 
 Router::add('/login', LoginController::class, 'show_login_page', false);
 Router::add('/logout', LoginController::class, 'logout');
-Router::add('/login-verify', LoginController::class, 'verify_login');
+Router::add('/login-verify', LoginController::class, 'verify_login', false);
 
 Router::add('/categories', CategoriesController::class, 'viewCategoriesPage');
 Router::add('/categories/find', CategoriesController::class, 'actionFindCategory');

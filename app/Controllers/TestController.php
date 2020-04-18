@@ -14,7 +14,7 @@ class TestController
 
     public function test_a()
     {
-        var_dump(Item::search('nk'));
+        var_dump(password_hash('admin', PASSWORD_DEFAULT));
 
     }
 
